@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.github.jpdgoncalves.base.DataEmitter;
 import com.github.jpdgoncalves.base.SensorSimulator;
@@ -15,6 +16,7 @@ import com.github.jpdgoncalves.base.SensorSimulator;
 public class DefaultSocketServerEmitter extends DataEmitter<Double> {
 
     private int port;
+    private ReentrantLock lock = new ReentrantLock();
 
     /**
      * Instantiate a default data emitter which
@@ -83,7 +85,13 @@ public class DefaultSocketServerEmitter extends DataEmitter<Double> {
 
                 while (!Thread.currentThread().isInterrupted()) {
                     Thread.sleep(1000);
-                    out.writeDouble(sensor.generateNextValue());
+
+                    double data;
+                    DefaultSocketServerEmitter.this.lock.lockInterruptibly();
+                    data = sensor.generateNextValue();
+                    DefaultSocketServerEmitter.this.lock.unlock();
+                    
+                    out.writeDouble(data);
                 }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
