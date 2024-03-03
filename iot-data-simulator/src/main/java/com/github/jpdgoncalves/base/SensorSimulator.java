@@ -5,6 +5,7 @@ package com.github.jpdgoncalves.base;
  * a simulator for some particular kind of sensor
  * capable of making measurement of the real world
  * like temperature or humidity.
+ * @param <T> The type of data that the sensor will produce
  */
 public interface SensorSimulator<T> {
 

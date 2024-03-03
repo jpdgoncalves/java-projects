@@ -23,6 +23,11 @@ public class DefaultTempSensor implements SensorSimulator<Double> {
     private double temperature = 20;
     private long previousTimestamp = System.currentTimeMillis();
 
+    /**
+     * Instantiate the Default Temperature sensor.
+     */
+    public DefaultTempSensor() {}
+
     @Override
     public Double generateNextValue() {
         long currentTimestamp = System.currentTimeMillis();

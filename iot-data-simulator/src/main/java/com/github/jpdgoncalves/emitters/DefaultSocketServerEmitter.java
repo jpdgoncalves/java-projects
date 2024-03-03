@@ -8,10 +8,21 @@ import java.net.Socket;
 import com.github.jpdgoncalves.base.DataEmitter;
 import com.github.jpdgoncalves.base.SensorSimulator;
 
+/**
+ * Default data emitter that uses a simple socket server
+ * mechanism. The server is instantiated then the 
+ */
 public class DefaultSocketServerEmitter extends DataEmitter<Double> {
 
     private int port;
 
+    /**
+     * Instantiate a default data emitter which
+     * will listen for connections at the specified
+     * port.
+     * @param port The port where the data emitter
+     * listens for connections.
+     */
     public DefaultSocketServerEmitter(int port) {
         this.port = port;
     }
