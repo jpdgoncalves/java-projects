@@ -1,10 +1,10 @@
 package com.github.jpdgoncalves.emitters;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.github.jpdgoncalves.base.DataEmitter;
 import com.github.jpdgoncalves.base.SensorSimulator;
@@ -14,99 +14,148 @@ import com.github.jpdgoncalves.base.Serializer;
  * Default data emitter that uses a simple socket server
  * mechanism. The server is instantiated and then await
  * for client connections. Once a connection is received
- * it will write one data measure for each client per 
+ * it will write one data measure for each client per
  * second
+ * 
  * @param <T> The type of data this server emits
  */
 public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
 
+    private static final int ACCEPT_TIMEOUT = 1000 * 10;
+
     private int port;
-    private ReentrantLock lock = new ReentrantLock();
+    private CopyOnWriteArrayList<ClientConnection> clientConnections = new CopyOnWriteArrayList<>();
 
     /**
      * Instantiate a default data emitter which
      * will listen for connections at the specified
      * port and produce the specified data that sourced
      * from the provided sensor.
-     * @param port The port to listen to client connections.
-     * @param sensor The sensor that produces the data.
+     * 
+     * @param port       The port to listen to client connections.
+     * @param sensor     The sensor that produces the data.
      * @param serializer The serializer that encodes the data.
      */
-    public DefaultSocketServerEmitter(int port, SensorSimulator<T> sensor, Serializer<T> serializer) {
+    public DefaultSocketServerEmitter(int port, SensorSimulator<T> sensor, Serializer<T> serializer)
+            throws IllegalArgumentException {
         super(sensor, serializer);
+        if (0 > port || port > 65535)
+            throw new IllegalArgumentException("Port number must be bigger than 0 and lower or equal to 65535");
         this.port = port;
     }
 
+    /**
+     * Start the socket server data emitter.
+     */
     @Override
     public void run() {
-        // Open a new socket server
-        ServerSocket serverSocket;
+        ServerSocket server = null;
+        Thread dataEmitter = new Thread(this::emitDataPeriodically);
+
+        // Start the socket server
         try {
-            serverSocket = new ServerSocket(port);
+            server = new ServerSocket(port);
+            server.setSoTimeout(ACCEPT_TIMEOUT);
         } catch (IOException e) {
-            System.err.println(e.getMessage());
-            return;
+            System.err.println(e);
+        } catch (SecurityException e) {
+            System.err.println(e);
         }
 
-        // Sensor Data stream block
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                Socket socket = serverSocket.accept();
-                SocketHandler handler = new SocketHandler(socket);
-                Thread thread = new Thread(handler::handle);
-                thread.setDaemon(true);
-                thread.start();
+        // Configure and start data emitter
+        dataEmitter.setDaemon(true);
+        dataEmitter.start();
+
+        // Start accepting and cleaning up connections
+        while (!Thread.interrupted()) {
+            Socket conn = null;
+            try {
+                conn = server.accept();
+            } catch (IOException e) {
+                // Fatal error, break out of the loop
+                System.err.println(e);
+                break;
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
+            // Add the next connection.
+            clientConnections.add(new ClientConnection(conn));
+            // Close and clean up all the invalid connections.
+            clientConnections.removeIf((ClientConnection e) -> {
+                if (!e.isValid) {
+                    try {
+                        e.conn.close();
+                    } catch (IOException except) {
+                        // Log this just in case.
+                        System.err.println(except);
+                    }
+                }
+
+                return !e.isValid;
+            });
         }
 
-        // Clean up
+        // Stop the data emitter thread.
         try {
-            serverSocket.close();
+            dataEmitter.interrupt();
+            dataEmitter.wait(2000);
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            /* eat the exception. The thread is daemonic regardless */ }
+
+        // Close client connections
+        for (ClientConnection client : clientConnections) {
+            try {
+                client.conn.close();
+            } catch (IOException e) {
+                System.err.println(e);
+            }
+        }
+
+        // Close server
+        try {
+            if (server != null)
+                server.close();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+    }
+
+
+    private void emitDataPeriodically() {
+        SensorSimulator<T> sensor = getSensor();
+        Serializer<T> serializer = getSerializer();
+
+        try {
+            while (!Thread.interrupted()) {
+                Thread.sleep(1000);
+                byte[] data = serializer.serialize(sensor.generateNextValue());
+
+                for (ClientConnection client : clientConnections) {
+                    // The emitter thread could be interrupted while sending data
+                    if (Thread.interrupted())
+                        break;
+                    // Try send data to this client.
+                    try {
+                        OutputStream out = client.conn.getOutputStream();
+                        out.write(data);
+                    } catch (IOException e) {
+                        // Socket was closed or is in an invalid state.
+                        // Not a fatal error. Just mark this connection
+                        // as invalid so the parent can clean it up.
+                    }
+                }
+            }
+        } catch (InterruptedException e) {
+            // Thread was interrupted. Stop running.
+            System.err.println(e);
             return;
         }
     }
 
-    private class SocketHandler {
+    private class ClientConnection {
+        public volatile boolean isValid = true;
+        public final Socket conn;
 
-        private Socket socket;
-
-        public SocketHandler(Socket socket) {
-            this.socket = socket;
-        }
-
-        public void handle() {
-            // Get the sensor simulator
-            SensorSimulator<T> sensor = getSensor();
-            Serializer<T> serializer = getSerializer();
-
-            try {
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-
-                while (!Thread.currentThread().isInterrupted()) {
-                    Thread.sleep(1000);
-
-                    T data;
-                    DefaultSocketServerEmitter.this.lock.lockInterruptibly();
-                    data = sensor.generateNextValue();
-                    DefaultSocketServerEmitter.this.lock.unlock();
-                    
-                    out.write(serializer.serialize(data));
-                }
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            } catch (InterruptedException e) {
-                System.err.println(e.getMessage());
-            }
-
-            try {
-                socket.close();
-            } catch (IOException e) {
-                System.err.println(e.getMessage());
-            }
+        public ClientConnection(Socket conn) {
+            this.conn = conn;
         }
     }
 }
