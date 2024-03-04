@@ -8,32 +8,32 @@ package com.github.jpdgoncalves.base;
 public abstract class DataEmitter<T> implements Runnable {
 
     private SensorSimulator<T> sensor;
+    private Serializer<T> serializer;
 
     /**
-     * Should not be invoked as this is an abstract class.
+     * Creates a new data emitter for data produced
+     * by the given sensor.
+     * @param sensor The sensor used to get data.
+     * @param serializer The serializer that encodes the data of this sensor.
      */
-    public DataEmitter() {}
-
-    /**
-     * Method to sensor simulator that will produce the
-     * data for the emitter.
-     * @param sensor The sensor that will produce the data
-     * @throws NullPointerException When the user attempts to
-     * pass null to the method.
-     */
-    public void setSensor(SensorSimulator<T> sensor) throws NullPointerException {
-        if (sensor == null) throw new NullPointerException("Sensor Simulator can't be null");
+    public DataEmitter(SensorSimulator<T> sensor, Serializer<T> serializer) {
         this.sensor = sensor;
+        this.serializer = serializer;
     }
 
     /**
      * Gets the sensor simulator
      * @return The sensor simulator that will produce the data.
-     * @throws NullPointerException When the sensor was not
-     * yet set.
      */
-    public SensorSimulator<T> getSensor() throws NullPointerException {
-        if (this.sensor == null) throw new NullPointerException("The Sensor Simulator was not yet set");
+    public SensorSimulator<T> getSensor() {
         return this.sensor;
+    }
+
+    /**
+     * Gets the serializer
+     * @return The serializer capable of encoding the data from the sensor.
+     */
+    public Serializer<T> getSerializer() {
+        return this.serializer;
     }
 }

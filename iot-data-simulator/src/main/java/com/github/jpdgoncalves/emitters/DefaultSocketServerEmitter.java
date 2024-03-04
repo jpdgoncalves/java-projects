@@ -8,12 +8,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import com.github.jpdgoncalves.base.DataEmitter;
 import com.github.jpdgoncalves.base.SensorSimulator;
+import com.github.jpdgoncalves.base.Serializer;
 
 /**
  * Default data emitter that uses a simple socket server
  * mechanism. The server is instantiated then the 
  */
-public class DefaultSocketServerEmitter extends DataEmitter<Double> {
+public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
 
     private int port;
     private ReentrantLock lock = new ReentrantLock();
@@ -25,7 +26,8 @@ public class DefaultSocketServerEmitter extends DataEmitter<Double> {
      * @param port The port where the data emitter
      * listens for connections.
      */
-    public DefaultSocketServerEmitter(int port) {
+    public DefaultSocketServerEmitter(int port, SensorSimulator<T> sensor, Serializer<T> serializer) {
+        super(sensor, serializer);
         this.port = port;
     }
 
@@ -72,13 +74,8 @@ public class DefaultSocketServerEmitter extends DataEmitter<Double> {
 
         public void handle() {
             // Get the sensor simulator
-            SensorSimulator<Double> sensor;
-            try {
-                sensor = getSensor();
-            } catch (NullPointerException e) {
-                System.err.println(e.getMessage());
-                return;
-            }
+            SensorSimulator<T> sensor = getSensor();
+            Serializer<T> serializer = getSerializer();
 
             try {
                 DataOutputStream out = new DataOutputStream(socket.getOutputStream());
@@ -86,12 +83,12 @@ public class DefaultSocketServerEmitter extends DataEmitter<Double> {
                 while (!Thread.currentThread().isInterrupted()) {
                     Thread.sleep(1000);
 
-                    double data;
+                    T data;
                     DefaultSocketServerEmitter.this.lock.lockInterruptibly();
                     data = sensor.generateNextValue();
                     DefaultSocketServerEmitter.this.lock.unlock();
                     
-                    out.writeDouble(data);
+                    out.write(serializer.serialize(data));
                 }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
