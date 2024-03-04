@@ -9,6 +9,11 @@ import com.github.jpdgoncalves.base.Serializer;
  */
 public class DoubleSerializer implements Serializer<Double> {
 
+    /**
+     * Creates an instance of a double serializer.
+     */
+    public DoubleSerializer() {}
+
     @Override
     public byte[] serialize(Double instance) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);

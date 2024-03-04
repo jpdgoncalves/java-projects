@@ -12,7 +12,11 @@ import com.github.jpdgoncalves.base.Serializer;
 
 /**
  * Default data emitter that uses a simple socket server
- * mechanism. The server is instantiated then the 
+ * mechanism. The server is instantiated and then await
+ * for client connections. Once a connection is received
+ * it will write one data measure for each client per 
+ * second
+ * @param <T> The type of data this server emits
  */
 public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
 
@@ -22,9 +26,11 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
     /**
      * Instantiate a default data emitter which
      * will listen for connections at the specified
-     * port.
-     * @param port The port where the data emitter
-     * listens for connections.
+     * port and produce the specified data that sourced
+     * from the provided sensor.
+     * @param port The port to listen to client connections.
+     * @param sensor The sensor that produces the data.
+     * @param serializer The serializer that encodes the data.
      */
     public DefaultSocketServerEmitter(int port, SensorSimulator<T> sensor, Serializer<T> serializer) {
         super(sensor, serializer);
