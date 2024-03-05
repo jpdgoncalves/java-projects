@@ -7,15 +7,15 @@ import jpdgoncalves.iotdatasim.base.SensorSimulator;
  * luminance sensor. It produces values whose
  * unit is lux or lumen per meter squared
  */
-public class DefaultLumSensor implements SensorSimulator<Double> {
+public class DefaultLumSensor implements SensorSimulator<Integer> {
 
     /**
      * Produces a single simulated measurement
      * of the current luminosity.
      */
     @Override
-    public Double generateNextValue() {
-        return 1000.0;
+    public Integer generateNextValue() {
+        return 1000;
     }
 
 }
