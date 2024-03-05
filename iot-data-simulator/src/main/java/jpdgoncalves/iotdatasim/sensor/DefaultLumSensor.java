@@ -8,27 +8,27 @@ import jpdgoncalves.iotdatasim.base.SensorSimulator;
  * Default implementation of a simulator for a
  * luminance sensor. It produces values whose
  * unit is lux or lumen per meter squared.
- * 
+ * <p>
  * The function used to generate the value is
  * a bit cumbersome. It makes use of three
  * types of functions in the following way.
- * 
+ * <p>
  * w(x) = 2 * sin (x*pi/12 + 3*pi/2) gives
  * us a function that has a 24 hour period
  * and whose minimum starts at 0.
- * 
+ * <p>
  * f(x) = 1 / (1 + 10 ^ (-w(x))) this function
  * has long periods where it stays close to the
  * maximum and minimum divided. The transitions
  * between maximum and minimum are smooth and not
  * to abrupt.
- * 
+ * <p>
  * z(x) = 10 ^ (-3 + 8 * f(x)) the function that
  * actually provides us with the luminance
  * measurement. It's values go between 0.001 and
  * 100_000 lumen. The transition between these
  * values follows f(x).
- * 
+ * <p>
  * We use variance to make the values have a
  * bit of randomness compared to the actual
  * measurement.
