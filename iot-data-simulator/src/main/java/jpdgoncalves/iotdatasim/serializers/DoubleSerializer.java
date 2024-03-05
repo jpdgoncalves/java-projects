@@ -16,7 +16,7 @@ public class DoubleSerializer implements Serializer<Double> {
 
     @Override
     public byte[] serialize(Double instance) {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        ByteBuffer buffer = ByteBuffer.allocate(Double.BYTES);
         return buffer.putDouble(instance).array();
     }
 
