@@ -1,6 +1,6 @@
-package com.github.jpdgoncalves.serializers;
+package jpdgoncalves.iotdatasim.serializers;
 
-import com.github.jpdgoncalves.base.Serializer;
+import jpdgoncalves.iotdatasim.base.Serializer;
 
 /**
  * Boolean serializer for the data emitters.

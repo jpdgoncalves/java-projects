@@ -1,4 +1,4 @@
-package com.github.jpdgoncalves.base;
+package jpdgoncalves.iotdatasim.base;
 
 /**
  * A Serializer capable of encoding to bytes

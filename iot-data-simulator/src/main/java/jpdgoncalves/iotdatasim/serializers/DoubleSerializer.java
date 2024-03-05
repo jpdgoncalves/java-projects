@@ -1,8 +1,8 @@
-package com.github.jpdgoncalves.serializers;
+package jpdgoncalves.iotdatasim.serializers;
 
 import java.nio.ByteBuffer;
 
-import com.github.jpdgoncalves.base.Serializer;
+import jpdgoncalves.iotdatasim.base.Serializer;
 
 /**
  * Class used to serialize and deserialize doubles.

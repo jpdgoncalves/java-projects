@@ -1,4 +1,4 @@
-package com.github.jpdgoncalves.base;
+package jpdgoncalves.iotdatasim.base;
 
 /**
  * Classes implementing this interface represent

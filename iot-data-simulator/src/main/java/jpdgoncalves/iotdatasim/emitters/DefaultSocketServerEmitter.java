@@ -1,4 +1,4 @@
-package com.github.jpdgoncalves.emitters;
+package jpdgoncalves.iotdatasim.emitters;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -6,9 +6,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.github.jpdgoncalves.base.DataEmitter;
-import com.github.jpdgoncalves.base.SensorSimulator;
-import com.github.jpdgoncalves.base.Serializer;
+import jpdgoncalves.iotdatasim.base.DataEmitter;
+import jpdgoncalves.iotdatasim.base.SensorSimulator;
+import jpdgoncalves.iotdatasim.base.Serializer;
 
 /**
  * Default data emitter that uses a simple socket server

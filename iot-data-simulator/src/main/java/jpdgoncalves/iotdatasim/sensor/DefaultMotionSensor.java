@@ -1,8 +1,8 @@
-package com.github.jpdgoncalves.sensor;
+package jpdgoncalves.iotdatasim.sensor;
 
 import java.util.Random;
 
-import com.github.jpdgoncalves.base.SensorSimulator;
+import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
  * Default simulator for a motion sensor. It outputs

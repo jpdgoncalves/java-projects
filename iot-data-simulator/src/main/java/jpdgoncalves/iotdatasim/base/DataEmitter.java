@@ -1,4 +1,4 @@
-package com.github.jpdgoncalves.base;
+package jpdgoncalves.iotdatasim.base;
 
 /**
  * Abstract class used to implement a Data Emitter.

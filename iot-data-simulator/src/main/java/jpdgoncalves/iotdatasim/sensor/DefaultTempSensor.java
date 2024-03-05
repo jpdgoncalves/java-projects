@@ -1,6 +1,6 @@
-package com.github.jpdgoncalves.sensor;
+package jpdgoncalves.iotdatasim.sensor;
 
-import com.github.jpdgoncalves.base.SensorSimulator;
+import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
  * This temperature sensor runs on the basic idea that at a certain 
