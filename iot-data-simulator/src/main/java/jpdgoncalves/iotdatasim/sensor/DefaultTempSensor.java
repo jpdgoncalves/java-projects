@@ -1,5 +1,6 @@
 package jpdgoncalves.iotdatasim.sensor;
 
+import jpdgoncalves.iotdatasim.base.CurrentTime;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
@@ -21,16 +22,21 @@ public class DefaultTempSensor implements SensorSimulator<Double> {
     private final double l = 20;
 
     private double temperature = 20;
-    private long previousTimestamp = System.currentTimeMillis();
+    private final CurrentTime now;
+    private long previousTimestamp;
 
     /**
      * Instantiate the Default Temperature sensor.
+     * @param now Method used to obtain the current time in milliseconds.
      */
-    public DefaultTempSensor() {}
+    public DefaultTempSensor(CurrentTime now) {
+        this.now = now;
+        previousTimestamp = now.currentTimeMillis();
+    }
 
     @Override
     public Double generateNextValue() {
-        long currentTimestamp = System.currentTimeMillis();
+        long currentTimestamp = now.currentTimeMillis();
 
         while ((currentTimestamp - previousTimestamp) > 1000) {
             int hour = (int) ((previousTimestamp / (1000 * 60 * 60)) % 24);

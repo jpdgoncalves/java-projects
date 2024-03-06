@@ -2,6 +2,7 @@ package jpdgoncalves.iotdatasim.sensor;
 
 import java.util.Random;
 
+import jpdgoncalves.iotdatasim.base.CurrentTime;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
@@ -37,15 +38,19 @@ public class DefaultLumSensor implements SensorSimulator<Double> {
 
     private static final double VARIANCE = 0.01;
 
-    private Random generator;
+    private final Random generator;
+    private final CurrentTime now;
 
     /**
      * Creates an instance of the default
      * simulator for a luminance sensor.
      * @param seed Parameter that controls
      * the internal random generator.
+     * @param now Method used to obtain the
+     * current time in milliseconds.
      */
-    public DefaultLumSensor(long seed) {
+    public DefaultLumSensor(long seed, CurrentTime now) {
+        this.now = now;
         this.generator = new Random(seed);
     }
 
@@ -55,7 +60,7 @@ public class DefaultLumSensor implements SensorSimulator<Double> {
      */
     @Override
     public Double generateNextValue() {
-        double hour = ((System.currentTimeMillis() / (1000.0 * 60.0 * 60.0)) % 24.0);
+        double hour = ((now.currentTimeMillis() / (1000.0 * 60.0 * 60.0)) % 24.0);
         double wx = 2 * Math.sin((hour * Math.PI)/12 + (3 * Math.PI)/12);
         double fx = 1 / (1 + Math.pow(10, wx));
         double measurement = Math.pow(10, (-3 + 8 * fx));

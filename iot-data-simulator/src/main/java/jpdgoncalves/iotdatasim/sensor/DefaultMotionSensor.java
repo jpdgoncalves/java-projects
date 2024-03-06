@@ -2,6 +2,7 @@ package jpdgoncalves.iotdatasim.sensor;
 
 import java.util.Random;
 
+import jpdgoncalves.iotdatasim.base.CurrentTime;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
@@ -20,6 +21,7 @@ public class DefaultMotionSensor implements SensorSimulator<Boolean> {
     private static final double MOVE_CHANCE = 0.2;
 
     private final Random generator;
+    private final CurrentTime now;
     private boolean detected = false;
     private long lastChangeTimestamp;
     private long intervalUntilChange;
@@ -28,11 +30,13 @@ public class DefaultMotionSensor implements SensorSimulator<Boolean> {
      * Creates an instance of a motion sensor simulator.
      * 
      * @param seed The seed that controls the randomness of this sensor.
+     * @param now Method used to obtain the current time in milliseconds.
      */
-    public DefaultMotionSensor(long seed) {
+    public DefaultMotionSensor(long seed, CurrentTime now) {
+        this.now = now;
         this.generator = new Random(seed);
         this.detected = this.generator.nextDouble() <= MOVE_CHANCE;
-        this.lastChangeTimestamp = System.currentTimeMillis();
+        this.lastChangeTimestamp = now.currentTimeMillis();
         this.intervalUntilChange = this.detected ? this.generator.nextLong(MOVE_MIN_INTER, MOVE_MAX_INTER + 1)
                 : this.generator.nextLong(STILL_MIN_INTER, STILL_MAX_INTER + 1);
     }
@@ -43,7 +47,7 @@ public class DefaultMotionSensor implements SensorSimulator<Boolean> {
      */
     @Override
     public Boolean generateNextValue() {
-        long currentTimestamp = System.currentTimeMillis();
+        long currentTimestamp = now.currentTimeMillis();
         if ((currentTimestamp - lastChangeTimestamp) < intervalUntilChange) {
             this.detected = this.generator.nextDouble() <= MOVE_CHANCE;
             this.lastChangeTimestamp = System.currentTimeMillis();

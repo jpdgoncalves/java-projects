@@ -2,6 +2,7 @@ package jpdgoncalves.iotdatasim.sensor;
 
 import java.util.Random;
 
+import jpdgoncalves.iotdatasim.base.CurrentTime;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
@@ -19,6 +20,7 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
     private static final double MIN_DELTA = 1.0 / 3600;
 
     private final Random generator;
+    private final CurrentTime now;
     private final double minHumidity;
     private final double maxHumidity;
     
@@ -32,14 +34,16 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
      * @param maxHumidity Maximum humidity percentage.
      * @param seed Seed random number generator that generates
      * a humidity percentage target.
+     * @param now Method used to obtain current time in milliseconds.
      */
-    public DefaultHumiditySensor(double minHumidity, double maxHumidity, long seed) {
+    public DefaultHumiditySensor(double minHumidity, double maxHumidity, long seed, CurrentTime now) {
+        this.now = now;
         this.generator = new Random(seed);
         this.minHumidity = minHumidity;
         this.maxHumidity = maxHumidity;
         target = minHumidity + generator.nextDouble() * (maxHumidity - minHumidity);
         current = target;
-        targetTimestamp = System.currentTimeMillis();
+        targetTimestamp = now.currentTimeMillis();
     }
 
     /**
@@ -48,7 +52,7 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
      */
     @Override
     public Double generateNextValue() {
-        long currentTimestamp = System.currentTimeMillis();
+        long currentTimestamp = now.currentTimeMillis();
         if (currentTimestamp - targetTimestamp >= INTERVAL) {
             targetTimestamp = currentTimestamp;
             target = minHumidity + generator.nextDouble() * (maxHumidity - minHumidity);
