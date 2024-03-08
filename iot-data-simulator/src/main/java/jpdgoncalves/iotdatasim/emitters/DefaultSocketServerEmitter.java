@@ -126,6 +126,7 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
         try {
             while (!Thread.interrupted()) {
                 Thread.sleep(1000);
+                sensor.tick();
                 byte[] data = serializer.serialize(sensor.readValue());
 
                 for (ClientConnection client : clientConnections) {
