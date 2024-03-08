@@ -1,53 +1,133 @@
 package jpdgoncalves.iotdatasim.sensor;
 
-import jpdgoncalves.iotdatasim.base.CurrentTime;
+import java.util.Random;
+
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
- * This temperature sensor runs on the basic idea that at a certain 
- * hour of the day the sun can only heat up the environment
- * up to a certain temperature. 
- * The calculation for the next temperature value is based on the 
- * formula for heat transfer Q/t = kA(T1 - T2)/l.
+ * Default simulator for a temperature sensor.
  */
 public class DefaultTempSensor implements SensorSimulator<Double> {
 
-    /**
-     * Temperatures to which the simulator will slowly move towards
-     * as the day goes on.
-     */
-    private final double[] maxPossibleTemperatures = new double[] {10,10,10,10,10,10,13,16,19,22,25,29,32,32,32,32,31,31,29,27,22,18,15,13};
-    private final double k = 0.1;
-    private final double A = 1;
-    private final double l = 20;
+    private double maxTemp = 32.0;
+    private double minTemp = 10.0;
+    private double variance = 1.0;
+    private long minTransitionTicks = 1 * 60 * 60;
+    private long maxTransitionTicks = 6 * 60 * 60;
+    private long changeTargetTicks = 6 * 60 * 60 + 30 * 60;
 
-    private double temperature = 20;
-    private final CurrentTime now;
-    private long previousTimestamp;
+    private volatile double realMeasure;
+    private double internalMeasure = minTemp;
+    private double target;
+    private double delta;
+    private double transitionCountdown = 0;
+    private long changeCountdown = 0;
+    private final Random random;
 
     /**
-     * Instantiate the Default Temperature sensor.
-     * @param now Method used to obtain the current time in milliseconds.
+     * Create an instance for this simulator.
+     * 
+     * @param seed The seed that controls its
+     *             randomness.
      */
-    public DefaultTempSensor(CurrentTime now) {
-        this.now = now;
-        previousTimestamp = now.currentTimeMillis();
+    public DefaultTempSensor(long seed) {
+        random = new Random(seed);
+        tick();
     }
 
+    /**
+     * Set the max temperature the simulator
+     * will generate.
+     * 
+     * @param maxTemp The max temperature the simulator
+     *                may generate.
+     */
+    public void setMaxTemp(double maxTemp) {
+        this.maxTemp = maxTemp;
+    }
+
+    /**
+     * Set the minimum temperature the simulator
+     * will generate.
+     * 
+     * @param minTemp
+     */
+    public void setMinTemp(double minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    /**
+     * Set by how much the temperature varies
+     * from the expected value. x values will cause
+     * the variance between -x and x.
+     * 
+     * @param variance The variance applied to the
+     *                 temperature after calculation.
+     */
+    public void setVariance(double variance) {
+        this.variance = variance;
+    }
+
+    /**
+     * The minimum amount of ticks that will take to go
+     * from a starting temperature to the target.
+     * 
+     * @param minTransitionTicks
+     */
+    public void setMinTransitionTicks(long minTransitionTicks) {
+        this.minTransitionTicks = minTransitionTicks;
+    }
+
+    /**
+     * The maximum amount of ticks that will take
+     * to go from a starting temperature to the target.
+     * 
+     * @param maxTransitionTicks
+     */
+    public void setMaxTransitionTicks(long maxTransitionTicks) {
+        this.maxTransitionTicks = maxTransitionTicks;
+    }
+
+    /**
+     * The number of ticks that takes to change the
+     * target temperature.
+     * 
+     * @param changeTargetTicks
+     */
+    public void setChangeTargetTicks(long changeTargetTicks) {
+        this.changeTargetTicks = changeTargetTicks;
+    }
+
+    /**
+     * Read the latest measured temperature.
+     */
     @Override
-    public Double generateNextValue() {
-        long currentTimestamp = now.currentTimeMillis();
-
-        while ((currentTimestamp - previousTimestamp) > 1000) {
-            int hour = (int) ((previousTimestamp / (1000 * 60 * 60)) % 24);
-            double deltaTemp = k * A * ((maxPossibleTemperatures[hour] - temperature) / l);
-            
-            temperature += deltaTemp;
-            previousTimestamp += 1000;
-        }
-
-        return temperature;
+    public Double readValue() {
+        return realMeasure;
     }
 
-    
+    /**
+     * Ticks the sensor simulator. Each
+     * tick represents one second.
+     */
+    @Override
+    public void tick() {
+        if (changeCountdown <= 0) {
+            changeCountdown = changeTargetTicks;
+            transitionCountdown = random.nextLong(minTransitionTicks, maxTransitionTicks + 1);
+            target = random.nextDouble(minTemp, maxTemp);
+            delta = (target - internalMeasure) / transitionCountdown;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        } else if (transitionCountdown > 0 && Math.signum(target - internalMeasure) == Math.signum(delta)) {
+            changeCountdown -= 1;
+            transitionCountdown -= 1;
+            internalMeasure += delta;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        } else {
+            changeCountdown -= 1;
+            transitionCountdown = 0;
+            internalMeasure = target;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        }
+    }
 }

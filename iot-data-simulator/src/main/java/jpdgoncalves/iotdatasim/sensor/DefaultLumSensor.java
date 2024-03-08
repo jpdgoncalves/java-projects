@@ -2,71 +2,135 @@ package jpdgoncalves.iotdatasim.sensor;
 
 import java.util.Random;
 
-import jpdgoncalves.iotdatasim.base.CurrentTime;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 
 /**
  * Default implementation of a simulator for a
  * luminance sensor. It produces values whose
  * unit is lux or lumen per meter squared.
- * <p>
- * The function used to generate the value is
- * a bit cumbersome. It makes use of three
- * types of functions in the following way.
- * <p>
- * w(x) = 2 * sin (x*pi/12 + 3*pi/2) gives
- * us a function that has a 24 hour period
- * and whose minimum starts at 0.
- * <p>
- * f(x) = 1 / (1 + 10 ^ (-w(x))) this function
- * has long periods where it stays close to the
- * maximum and minimum divided. The transitions
- * between maximum and minimum are smooth and not
- * to abrupt.
- * <p>
- * z(x) = 10 ^ (-3 + 8 * f(x)) the function that
- * actually provides us with the luminance
- * measurement. It's values go between 0.001 and
- * 100_000 lumen. The transition between these
- * values follows f(x).
- * <p>
- * We use variance to make the values have a
- * bit of randomness compared to the actual
- * measurement.
+ * 
  */
 public class DefaultLumSensor implements SensorSimulator<Double> {
 
-    private static final double VARIANCE = 0.01;
+    private double maxLumen = Math.pow(10, 5);
+    private double minLumen = Math.pow(10, -3);
+    private double variance = 5.0;
+    private long minTransitionTicks = 1 * 60 * 60;
+    private long maxTransitionTicks = 6 * 60 * 60;
+    private long changeTargetTicks = 6 * 60 * 60 + 30 * 60;
 
-    private final Random generator;
-    private final CurrentTime now;
+    private volatile double realMeasure;
+    private double internalMeasure = minLumen;
+    private double target;
+    private double delta;
+    private double transitionCountdown = 0;
+    private long changeCountdown = 0;
+    private final Random random;
 
     /**
-     * Creates an instance of the default
-     * simulator for a luminance sensor.
-     * @param seed Parameter that controls
-     * the internal random generator.
-     * @param now Method used to obtain the
-     * current time in milliseconds.
+     * Create an instance for this simulator.
+     * 
+     * @param seed The seed that controls its
+     *             randomness.
      */
-    public DefaultLumSensor(long seed, CurrentTime now) {
-        this.now = now;
-        this.generator = new Random(seed);
+    public DefaultLumSensor(long seed) {
+        random = new Random(seed);
+        tick();
     }
 
     /**
-     * Produces a single simulated measurement
-     * of the current luminosity.
+     * Set the max lumen the simulator
+     * will generate.
+     * 
+     * @param maxLumen The max temperature the simulator
+     *                may generate.
+     */
+    public void setMaxLumen(double maxLumen) {
+        this.maxLumen = maxLumen;
+    }
+
+    /**
+     * Set the minimum lumen the simulator
+     * will generate.
+     * 
+     * @param minLumen
+     */
+    public void setMinLumen(double minLumen) {
+        this.minLumen = minLumen;
+    }
+
+    /**
+     * Set by how much the internal measure varies
+     * from the expected value. x values will cause
+     * the variance between -x and x.
+     * 
+     * @param variance The variance applied to the
+     *                 temperature after calculation.
+     */
+    public void setVariance(double variance) {
+        this.variance = variance;
+    }
+
+    /**
+     * The minimum amount of ticks that will take to go
+     * from a starting temperature to the target.
+     * 
+     * @param minTransitionTicks
+     */
+    public void setMinTransitionTicks(long minTransitionTicks) {
+        this.minTransitionTicks = minTransitionTicks;
+    }
+
+    /**
+     * The maximum amount of ticks that will take
+     * to go from a starting temperature to the target.
+     * 
+     * @param maxTransitionTicks
+     */
+    public void setMaxTransitionTicks(long maxTransitionTicks) {
+        this.maxTransitionTicks = maxTransitionTicks;
+    }
+
+    /**
+     * The number of ticks that takes to change the
+     * target temperature.
+     * 
+     * @param changeTargetTicks
+     */
+    public void setChangeTargetTicks(long changeTargetTicks) {
+        this.changeTargetTicks = changeTargetTicks;
+    }
+
+    /**
+     * Read the latest measured temperature.
      */
     @Override
-    public Double generateNextValue() {
-        double hour = ((now.currentTimeMillis() / (1000.0 * 60.0 * 60.0)) % 24.0);
-        double wx = 2 * Math.sin((hour * Math.PI)/12 + (3 * Math.PI)/12);
-        double fx = 1 / (1 + Math.pow(10, wx));
-        double measurement = Math.pow(10, (-3 + 8 * fx));
-        
-
-        return measurement + this.generator.nextDouble(measurement * -VARIANCE, measurement * VARIANCE);
+    public Double readValue() {
+        return realMeasure;
     }
 
+    /**
+     * Ticks the sensor simulator. Each
+     * tick represents one second.
+     */
+    @Override
+    public void tick() {
+        if (changeCountdown <= 0) {
+            changeCountdown = changeTargetTicks;
+            transitionCountdown = random.nextLong(minTransitionTicks, maxTransitionTicks + 1);
+            target = random.nextDouble(minLumen, maxLumen);
+            delta = (target - internalMeasure) / transitionCountdown;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        } else if (transitionCountdown > 0 && Math.signum(target - internalMeasure) == Math.signum(delta)) {
+            changeCountdown -= 1;
+            transitionCountdown -= 1;
+            internalMeasure += delta;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        } else {
+            changeCountdown -= 1;
+            transitionCountdown = 0;
+            internalMeasure = target;
+            realMeasure = random.nextDouble(internalMeasure - variance, internalMeasure + variance);
+        }
+    }
 }
