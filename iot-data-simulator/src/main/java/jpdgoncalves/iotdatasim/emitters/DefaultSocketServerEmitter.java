@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import jpdgoncalves.iotdatasim.base.DataEmitter;
@@ -67,17 +68,22 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
         dataEmitter.start();
 
         // Start accepting and cleaning up connections
-        while (!Thread.interrupted()) {
+        while (server != null && !Thread.interrupted()) {
             Socket conn = null;
             try {
                 conn = server.accept();
+            } catch (SocketTimeoutException e) {
+                // We only timedout accepting a connection. Not fatal.
             } catch (IOException e) {
                 // Fatal error, break out of the loop
                 System.err.println(e);
                 break;
             }
+
+
             // Add the next connection.
-            clientConnections.add(new ClientConnection(conn));
+            if (conn != null)
+                clientConnections.add(new ClientConnection(conn));
             // Close and clean up all the invalid connections.
             clientConnections.removeIf((ClientConnection e) -> {
                 if (!e.isValid) {
@@ -118,7 +124,6 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
         }
     }
 
-
     private void emitDataPeriodically() {
         SensorSimulator<T> sensor = getSensor();
         Serializer<T> serializer = getSerializer();
@@ -126,13 +131,19 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
         try {
             while (!Thread.interrupted()) {
                 Thread.sleep(1000);
-                sensor.tick();
+
                 byte[] data = serializer.serialize(sensor.readValue());
 
                 for (ClientConnection client : clientConnections) {
                     // The emitter thread could be interrupted while sending data
                     if (Thread.interrupted())
                         break;
+
+                    // If the client connection is invalid
+                    // just skip it
+                    if (!client.isValid)
+                        continue;
+
                     // Try send data to this client.
                     try {
                         OutputStream out = client.conn.getOutputStream();
@@ -141,6 +152,7 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
                         // Socket was closed or is in an invalid state.
                         // Not a fatal error. Just mark this connection
                         // as invalid so the parent can clean it up.
+                        client.isValid = false;
                     }
                 }
             }
