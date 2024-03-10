@@ -132,7 +132,7 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
             while (!Thread.interrupted()) {
                 Thread.sleep(1000);
 
-                byte[] data = serializer.serialize(sensor.readValue());
+                T value = sensor.readValue();
 
                 for (ClientConnection client : clientConnections) {
                     // The emitter thread could be interrupted while sending data
@@ -147,7 +147,7 @@ public class DefaultSocketServerEmitter<T> extends DataEmitter<T> {
                     // Try send data to this client.
                     try {
                         OutputStream out = client.conn.getOutputStream();
-                        out.write(data);
+                        serializer.write(out, value);
                     } catch (IOException e) {
                         // Socket was closed or is in an invalid state.
                         // Not a fatal error. Just mark this connection

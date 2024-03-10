@@ -37,7 +37,7 @@ public class DefaultSocketServerEmitterTest {
         InputStream cStream = client.getInputStream();
 
         for (int i = 0; i < 10; i++) {
-            double measure = serializer.deserialize(cStream.readNBytes(Double.BYTES));
+            double measure = serializer.read(cStream);
             System.out.println("Read measure " + i + ": " + measure);
         }
 
