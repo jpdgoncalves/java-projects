@@ -12,7 +12,6 @@ import java.util.List;
  */
 public class SensorTicker implements Runnable {
 
-    private long prevStamp = System.currentTimeMillis();
     private final long period;
     private List<SensorSimulator<?>> sensors = new ArrayList<>();
 
@@ -48,13 +47,13 @@ public class SensorTicker implements Runnable {
     public void run() {
         try {
             while (!Thread.interrupted()) {
+                long start = System.currentTimeMillis();
                 for (SensorSimulator<?> sensor : sensors) {
                     sensor.tick();
                 }
-                long current = System.currentTimeMillis();
-                long interval = period - (current - prevStamp);
-                interval = interval > 0 ? interval : 1; 
-                prevStamp = current;
+                long end = System.currentTimeMillis();
+                long interval = period - (end - start);
+                interval = interval > 0 ? interval : 1;
                 Thread.sleep(interval);
             }
         } catch (InterruptedException e) {/** Ignore. This tells us to stop the ticker */}
