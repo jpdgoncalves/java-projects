@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import jpdgoncalves.iotdatasim.base.DataEmitter;
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 import jpdgoncalves.iotdatasim.base.SensorTicker;
 import jpdgoncalves.iotdatasim.sensor.DefaultTempSensor;
@@ -20,10 +19,11 @@ public class DefaultSocketServerEmitterTest {
     @Timeout(30)
     void testRun() throws UnknownHostException, IOException, InterruptedException {
         int port = 12000;
+        long period = 1000;
         SensorSimulator<Double> sensor = new DefaultTempSensor(1289073459497L);
         SensorTicker ticker = new SensorTicker(1000);
         DoubleSerializer serializer = new DoubleSerializer();
-        DataEmitter<Double> emitter = new DefaultSocketServerEmitter<>(port, sensor, serializer);
+        DefaultSocketServerEmitter<Double> emitter = new DefaultSocketServerEmitter<>(port, period, sensor, serializer);
         
         Thread tickerThread = new Thread(ticker, "Ticker");
         Thread emitterThread = new Thread(emitter, "Emitter");
