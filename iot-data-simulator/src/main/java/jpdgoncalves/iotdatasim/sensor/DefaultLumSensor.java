@@ -42,8 +42,8 @@ public class DefaultLumSensor implements SensorSimulator<Double> {
      * Set the max lumen the simulator
      * will generate.
      * 
-     * @param maxLumen The max temperature the simulator
-     *                may generate.
+     * @param maxLumen The max lumen the simulator
+     *                 may generate.
      */
     public void setMaxLumen(double maxLumen) {
         this.maxLumen = maxLumen;
@@ -53,7 +53,8 @@ public class DefaultLumSensor implements SensorSimulator<Double> {
      * Set the minimum lumen the simulator
      * will generate.
      * 
-     * @param minLumen
+     * @param minLumen The minimum lumen the simulator
+     *                 will generate.
      */
     public void setMinLumen(double minLumen) {
         this.minLumen = minLumen;
@@ -65,37 +66,40 @@ public class DefaultLumSensor implements SensorSimulator<Double> {
      * the variance between -x and x.
      * 
      * @param variance The variance applied to the
-     *                 temperature after calculation.
+     *                 internal measure after calculation.
      */
     public void setVariance(double variance) {
         this.variance = variance;
     }
 
     /**
-     * The minimum amount of ticks that will take to go
-     * from a starting temperature to the target.
+     * Set the minimum amount of ticks that will take to go
+     * from a current measure to the target.
      * 
-     * @param minTransitionTicks
+     * @param minTransitionTicks The minimum amount of ticks that will take to go
+     *                           from a current measure to the target.
      */
     public void setMinTransitionTicks(long minTransitionTicks) {
         this.minTransitionTicks = minTransitionTicks;
     }
 
     /**
-     * The maximum amount of ticks that will take
-     * to go from a starting temperature to the target.
+     * Set the maximum amount of ticks that will take
+     * to go from a starting measure to the target.
      * 
-     * @param maxTransitionTicks
+     * @param maxTransitionTicks The maximum amount of ticks that will take
+     *                           to go from a starting measure to the target.
      */
     public void setMaxTransitionTicks(long maxTransitionTicks) {
         this.maxTransitionTicks = maxTransitionTicks;
     }
 
     /**
-     * The number of ticks that takes to change the
-     * target temperature.
+     * Set the number of ticks that takes to change the
+     * target value.
      * 
-     * @param changeTargetTicks
+     * @param changeTargetTicks The number of ticks that takes to change the
+     * target value.
      */
     public void setChangeTargetTicks(long changeTargetTicks) {
         this.changeTargetTicks = changeTargetTicks;

@@ -40,8 +40,8 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
      * Set the max humidity the simulator
      * will generate.
      * 
-     * @param maxHumidity The max temperature the simulator
-     *                may generate.
+     * @param maxHumidity The max humidity the simulator
+     *                    may generate.
      */
     public void setMaxHumidity(double maxHumidity) {
         this.maxHumidity = maxHumidity;
@@ -51,7 +51,8 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
      * Set the minimum humidity the simulator
      * will generate.
      * 
-     * @param minHumidity
+     * @param minHumidity The minimum temperature the
+     * simulator may generate.
      */
     public void setMinHumidity(double minHumidity) {
         this.minHumidity = minHumidity;
@@ -70,30 +71,33 @@ public class DefaultHumiditySensor implements SensorSimulator<Double> {
     }
 
     /**
-     * The minimum amount of ticks that will take to go
-     * from a starting temperature to the target.
+     * Set the minimum amount of ticks that will take to go
+     * from a starting humidity to the target.
      * 
-     * @param minTransitionTicks
+     * @param minTransitionTicks The minimum amount of ticks that will take to go
+     * from a starting humidity to the target.
      */
     public void setMinTransitionTicks(long minTransitionTicks) {
         this.minTransitionTicks = minTransitionTicks;
     }
 
     /**
-     * The maximum amount of ticks that will take
-     * to go from a starting temperature to the target.
+     * Set the maximum amount of ticks that will take
+     * to go from a starting humidity to the target.
      * 
-     * @param maxTransitionTicks
+     * @param maxTransitionTicks The maximum amount of ticks that will take
+     * to go from a starting humidity to the target.
      */
     public void setMaxTransitionTicks(long maxTransitionTicks) {
         this.maxTransitionTicks = maxTransitionTicks;
     }
 
     /**
-     * The number of ticks that takes to change the
-     * target temperature.
+     * Set the number of ticks that takes to change the
+     * target humidity.
      * 
-     * @param changeTargetTicks
+     * @param changeTargetTicks The number of ticks that takes to change the
+     * target humidity.
      */
     public void setChangeTargetTicks(long changeTargetTicks) {
         this.changeTargetTicks = changeTargetTicks;

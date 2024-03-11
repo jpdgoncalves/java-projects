@@ -39,7 +39,7 @@ public class DefaultSocketServerEmitter<T> extends Thread {
      * @param period     How frequently is data sent to the clients.
      * @param sensor     The sensor that produces the data.
      * @param serializer The serializer that encodes the data.
-     * @throws IOException
+     * @throws IOException If the socket server can't be opened.
      */
     public DefaultSocketServerEmitter(int port, long period, SensorSimulator<T> sensor, Serializer<T> serializer)
             throws IllegalArgumentException, IOException {
@@ -87,7 +87,10 @@ public class DefaultSocketServerEmitter<T> extends Thread {
                 connections.add(conn);
             }
         } catch (IOException e) {
-            /** Regardless of the exception that occured we want to cleanup to we just ignore it */
+            /**
+             * Regardless of the exception that occured we want to cleanup to we just ignore
+             * it
+             */
         } finally {
             cleanUp();
         }
@@ -151,6 +154,7 @@ public class DefaultSocketServerEmitter<T> extends Thread {
     private void closeAndIgnoreException(Closeable conn) {
         try {
             conn.close();
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
     }
 }

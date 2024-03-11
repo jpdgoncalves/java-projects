@@ -5,6 +5,8 @@ import org.apache.kafka.common.serialization.Deserializer;
 /**
  * Adapter that transforms a {@link jpdgoncalves.iotdatasim.base.Serializer} instance
  * into a {@link org.apache.kafka.common.serialization.Deserializer}
+ * 
+ * @param <T> The type of data this adapter deserializes.
  */
 public class KafkaDeserializer<T> implements Deserializer<T> {
 

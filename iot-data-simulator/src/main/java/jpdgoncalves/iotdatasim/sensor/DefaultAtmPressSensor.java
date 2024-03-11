@@ -51,7 +51,7 @@ public class DefaultAtmPressSensor implements SensorSimulator<Double> {
      * will generate.
      * 
      * @param minPress The minimum pressure the simulator
-     *                may generate.
+     *                 may generate.
      */
     public void setMinPress(double minPress) {
         this.minPress = minPress;
@@ -73,27 +73,31 @@ public class DefaultAtmPressSensor implements SensorSimulator<Double> {
      * The minimum amount of ticks that will take to go
      * from a starting temperature to the target.
      * 
-     * @param minTransitionTicks
+     * @param minTransitionTicks The minimum amount of ticks
+     *                           it will take to change the temperature from the
+     *                           current one to the target one.
      */
     public void setMinTransitionTicks(long minTransitionTicks) {
         this.minTransitionTicks = minTransitionTicks;
     }
 
     /**
-     * The maximum amount of ticks that will take
+     * Set maximum amount of ticks that will take
      * to go from a starting temperature to the target.
      * 
-     * @param maxTransitionTicks
+     * @param maxTransitionTicks The maximum amount of ticks that will take
+     *                           to go from a starting temperature to the target.
      */
     public void setMaxTransitionTicks(long maxTransitionTicks) {
         this.maxTransitionTicks = maxTransitionTicks;
     }
 
     /**
-     * The number of ticks that takes to change the
+     * Set the number of ticks that takes to change the
      * target temperature.
      * 
-     * @param changeTargetTicks
+     * @param changeTargetTicks The number of ticks that takes to change the
+     *                          target temperature.
      */
     public void setChangeTargetTicks(long changeTargetTicks) {
         this.changeTargetTicks = changeTargetTicks;

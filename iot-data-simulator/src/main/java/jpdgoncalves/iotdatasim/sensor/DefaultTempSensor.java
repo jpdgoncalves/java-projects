@@ -50,7 +50,8 @@ public class DefaultTempSensor implements SensorSimulator<Double> {
      * Set the minimum temperature the simulator
      * will generate.
      * 
-     * @param minTemp
+     * @param minTemp The minimum temperature the simulator
+     * will generate.
      */
     public void setMinTemp(double minTemp) {
         this.minTemp = minTemp;
@@ -69,30 +70,33 @@ public class DefaultTempSensor implements SensorSimulator<Double> {
     }
 
     /**
-     * The minimum amount of ticks that will take to go
+     * Set the minimum amount of ticks that will take to go
      * from a starting temperature to the target.
      * 
-     * @param minTransitionTicks
+     * @param minTransitionTicks The minimum amount of ticks that will take to go
+     * from a starting temperature to the target.
      */
     public void setMinTransitionTicks(long minTransitionTicks) {
         this.minTransitionTicks = minTransitionTicks;
     }
 
     /**
-     * The maximum amount of ticks that will take
+     * Set the maximum amount of ticks that will take
      * to go from a starting temperature to the target.
      * 
-     * @param maxTransitionTicks
+     * @param maxTransitionTicks The maximum amount of ticks that will take
+     * to go from a starting temperature to the target.
      */
     public void setMaxTransitionTicks(long maxTransitionTicks) {
         this.maxTransitionTicks = maxTransitionTicks;
     }
 
     /**
-     * The number of ticks that takes to change the
+     * Set the number of ticks that takes to change the
      * target temperature.
      * 
-     * @param changeTargetTicks
+     * @param changeTargetTicks The number of ticks that takes to change the
+     * target temperature.
      */
     public void setChangeTargetTicks(long changeTargetTicks) {
         this.changeTargetTicks = changeTargetTicks;

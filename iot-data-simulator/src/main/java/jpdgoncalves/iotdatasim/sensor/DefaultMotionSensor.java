@@ -34,7 +34,8 @@ public class DefaultMotionSensor implements SensorSimulator<Boolean> {
      * Set the minimum amount of ticks the
      * sensor doesn't detect movement.
      * 
-     * @param minStillTicks
+     * @param minStillTicks The minimum amount of ticks the
+     * sensor doesn't detect movement.
      */
     public void setMinStillTicks(long minStillTicks) {
         this.minStillTicks = minStillTicks;
@@ -44,27 +45,30 @@ public class DefaultMotionSensor implements SensorSimulator<Boolean> {
      * Sets the maximum amount of ticks
      * the sensor doesn't detect movement.
      * 
-     * @param maxStillTicks
+     * @param maxStillTicks The maximum amount of ticks
+     * the sensor doesn't detect movement.
      */
     public void setMaxStillTicks(long maxStillTicks) {
         this.maxStillTicks = maxStillTicks;
     }
 
     /**
-     * The minimum amount of ticks the
+     * Set the minimum amount of ticks the
      * sensor detects movement.
      * 
-     * @param minMoveTicks
+     * @param minMoveTicks The minimum amount of ticks the
+     * sensor detects movement.
      */
     public void setMinMoveTicks(long minMoveTicks) {
         this.minMoveTicks = minMoveTicks;
     }
 
     /**
-     * The maximum amount of ticks the
+     * Set the maximum amount of ticks the
      * sensor detects movement.
      * 
-     * @param maxMoveTicks
+     * @param maxMoveTicks The maximum amount of ticks the
+     * sensor detects movement.
      */
     public void setMaxMoveTicks(long maxMoveTicks) {
         this.maxMoveTicks = maxMoveTicks;
