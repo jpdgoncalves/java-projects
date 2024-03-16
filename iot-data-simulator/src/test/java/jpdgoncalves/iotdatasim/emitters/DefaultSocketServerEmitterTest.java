@@ -25,11 +25,10 @@ public class DefaultSocketServerEmitterTest {
         DoubleSerializer serializer = new DoubleSerializer();
         DefaultSocketServerEmitter<Double> emitter = new DefaultSocketServerEmitter<>(port, period, sensor, serializer);
         
-        Thread tickerThread = new Thread(ticker, "Ticker");
         Thread emitterThread = new Thread(emitter, "Emitter");
 
         ticker.addSensor(sensor);
-        tickerThread.start();
+        ticker.start();
         emitterThread.start();
 
         Thread.sleep(5);
@@ -41,10 +40,10 @@ public class DefaultSocketServerEmitterTest {
             System.out.println("Read measure " + i + ": " + measure);
         }
 
-        tickerThread.interrupt();
+        ticker.interrupt();
         emitterThread.interrupt();
 
-        tickerThread.join(2000);
+        ticker.join(2000);
         emitterThread.join(2000);
 
         client.close();

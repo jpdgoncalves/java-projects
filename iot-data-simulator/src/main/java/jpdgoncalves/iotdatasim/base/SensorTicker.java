@@ -10,7 +10,7 @@ import java.util.List;
  * sensor are particularly expensive but
  * never less.
  */
-public class SensorTicker implements Runnable {
+public class SensorTicker extends Thread {
 
     private final long period;
     private List<SensorSimulator<?>> sensors = new ArrayList<>();
