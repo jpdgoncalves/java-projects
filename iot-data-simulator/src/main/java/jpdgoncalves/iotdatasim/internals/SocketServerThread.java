@@ -42,9 +42,9 @@ public class SocketServerThread extends Thread {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            Socket conn;
             try {
-                conn = server.accept();
+                Socket conn = server.accept();
+                connList.add(conn);
             } catch (SocketException e) {
                 /** The server was closed. This is expected so we should just quit the loop */
                 break;
@@ -53,8 +53,6 @@ public class SocketServerThread extends Thread {
                 e.printStackTrace();
                 break;
             }
-
-            connList.add(conn);
         }
     }
 
