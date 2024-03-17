@@ -20,6 +20,13 @@ public class KafkaEmitter<T> {
     private final SensorSimulator<T> sensor;
     private final Producer<String, T> producer;
 
+    /**
+     * Create the kafka emitter.
+     * @param period
+     * @param topic
+     * @param sensor
+     * @param producer
+     */
     public KafkaEmitter(long period, String topic, SensorSimulator<T> sensor, Producer<String, T> producer) {
         tickerThread = new Ticker(period);
         this.topic = topic;

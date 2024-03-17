@@ -8,6 +8,9 @@ import jpdgoncalves.iotdatasim.base.Serializer;
 import jpdgoncalves.iotdatasim.base.Ticker;
 import jpdgoncalves.iotdatasim.internals.SocketServerThread;
 
+/**
+ * An emitter that works on sockets.
+ */
 public class SocketServerEmitter<T> {
 
     private final SocketServerThread socketServerThread;
