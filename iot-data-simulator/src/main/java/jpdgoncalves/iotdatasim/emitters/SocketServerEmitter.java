@@ -43,7 +43,7 @@ public class SocketServerEmitter<T> {
         socketServerThread.start();
     }
 
-    public void emit() {
+    private void emit() {
         byte[] serialized = serializer.serialize(sensor.readValue());
         ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + serialized.length);
         buffer.putInt(serialized.length);

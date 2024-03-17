@@ -38,7 +38,7 @@ public class KafkaEmitter<T> {
         tickerThread.start();
     }
 
-    public void emit() {
+    private void emit() {
         ProducerRecord<String, T> record = new ProducerRecord<String, T>(topic, sensor.readValue());
         producer.send(record);
     }
