@@ -58,7 +58,8 @@ public class SocketServerThread extends Thread {
 
     /**
      * Attempts to broadcast the provided message to
-     * all of the connected clients.
+     * all of the connected clients. This method is not
+     * thread safe.
      * @param msg The message to broadcast to all
      * clients.
      */
