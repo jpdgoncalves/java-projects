@@ -38,11 +38,9 @@ public class KafkaEmitter<T> {
         tickerThread.start();
     }
 
-    private void emit() {
-        ProducerRecord<String, T> record = new ProducerRecord<String, T>(topic, sensor.readValue());
-        producer.send(record);
-    }
-
+    /**
+     * Stops the emitter from producing anymore data.
+     */
     public void stop() {
         tickerThread.interrupt();
 
@@ -51,5 +49,10 @@ public class KafkaEmitter<T> {
         } catch (InterruptedException e) {
             /** Ignore this exception. */
         }
+    }
+
+    private void emit() {
+        ProducerRecord<String, T> record = new ProducerRecord<String, T>(topic, sensor.readValue());
+        producer.send(record);
     }
 }

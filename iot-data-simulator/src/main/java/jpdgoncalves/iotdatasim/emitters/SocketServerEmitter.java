@@ -10,6 +10,7 @@ import jpdgoncalves.iotdatasim.internals.SocketServerThread;
 
 /**
  * An emitter that works on sockets.
+ * @param <T> The type of data that will be produced
  */
 public class SocketServerEmitter<T> {
 
@@ -43,14 +44,9 @@ public class SocketServerEmitter<T> {
         socketServerThread.start();
     }
 
-    private void emit() {
-        byte[] serialized = serializer.serialize(sensor.readValue());
-        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + serialized.length);
-        buffer.putInt(serialized.length);
-        buffer.put(serialized);
-        socketServerThread.tryBroadcast(buffer.array());
-    }
-
+    /**
+     * Stops the emitter from producing any more data.
+     */
     public void stop() {
         socketServerThread.interrupt();
         tickerThread.interrupt();
@@ -61,5 +57,13 @@ public class SocketServerEmitter<T> {
         } catch (InterruptedException e) {
             /** Ignore the exception. It shouldn't happen. */
         }
+    }
+
+    private void emit() {
+        byte[] serialized = serializer.serialize(sensor.readValue());
+        ByteBuffer buffer = ByteBuffer.allocate(Integer.BYTES + serialized.length);
+        buffer.putInt(serialized.length);
+        buffer.put(serialized);
+        socketServerThread.tryBroadcast(buffer.array());
     }
 }
