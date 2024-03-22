@@ -24,6 +24,12 @@ public class SocketServerThread extends Thread {
     private final CopyOnWriteArrayList<Socket> connList = new CopyOnWriteArrayList<>();
     private final ServerSocket server;
 
+    /**
+     * Creates a new SocketServerThread. This
+     * immediatly opens the server.
+     * @param port The port where connections will be accepted.
+     * @throws IOException
+     */
     public SocketServerThread(int port) throws IOException {
         this.server = new ServerSocket(port);
     }

@@ -20,6 +20,8 @@ public interface SensorSimulator<T> {
      * Ticks the sensor simulator. How much
      * time each tick represents is up to
      * the user.
+     * @throws SimulationEndedException Use to indicate the simulation
+     * of this sensor has reached its conclusion.
      */
     public void tick() throws SimulationEndedException;
 }
