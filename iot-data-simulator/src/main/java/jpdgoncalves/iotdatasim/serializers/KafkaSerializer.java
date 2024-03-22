@@ -3,21 +3,21 @@ package jpdgoncalves.iotdatasim.serializers;
 import org.apache.kafka.common.serialization.Serializer;
 
 /**
- * Adapter that transforms a {@link jpdgoncalves.iotdatasim.base.Serializer} instance
+ * Adapter that transforms a {@link jpdgoncalves.iotdatasim.base.DeprecatedSerializer} instance
  * into a {@link org.apache.kafka.common.serialization.Serializer}
  * 
  * @param <T> The type of data this adapter serializes.
  */
 public class KafkaSerializer<T> implements Serializer<T> {
 
-    private final jpdgoncalves.iotdatasim.base.Serializer<T> rSerializer;
+    private final jpdgoncalves.iotdatasim.base.DeprecatedSerializer<T> rSerializer;
 
     /**
      * Creates a {@link org.apache.kafka.common.serialization.Serializer}
-     * from a {@link jpdgoncalves.iotdatasim.base.Serializer}
+     * from a {@link jpdgoncalves.iotdatasim.base.DeprecatedSerializer}
      * @param rSerializer The serializer that requires the adapter
      */
-    public KafkaSerializer(jpdgoncalves.iotdatasim.base.Serializer<T> rSerializer) {
+    public KafkaSerializer(jpdgoncalves.iotdatasim.base.DeprecatedSerializer<T> rSerializer) {
         this.rSerializer = rSerializer;
     }
 

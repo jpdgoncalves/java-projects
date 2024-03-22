@@ -1,11 +1,11 @@
 package jpdgoncalves.iotdatasim.serializers;
 
-import jpdgoncalves.iotdatasim.base.Serializer;
+import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
 
 /**
  * Boolean serializer for the data emitters.
  */
-public class BooleanSerializer implements Serializer<Boolean> {
+public class BooleanSerializer implements DeprecatedSerializer<Boolean> {
 
     /**
      * Insantiate a boolean deserializer.

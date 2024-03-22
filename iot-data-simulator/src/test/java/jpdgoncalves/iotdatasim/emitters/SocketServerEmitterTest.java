@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
-import jpdgoncalves.iotdatasim.base.Serializer;
+import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
 import jpdgoncalves.iotdatasim.sensor.DefaultTempSensor;
 import jpdgoncalves.iotdatasim.serializers.DoubleSerializer;
 
@@ -22,7 +22,7 @@ public class SocketServerEmitterTest {
         int port = 10002;
 
         SensorSimulator<Double> sensor = new DefaultTempSensor(seed);
-        Serializer<Double> serializer = new DoubleSerializer();
+        DeprecatedSerializer<Double> serializer = new DoubleSerializer();
         SocketServerEmitter<Double> emitter = new SocketServerEmitter<>(period, port, sensor, serializer);
 
         Socket client = new Socket("localhost", port);

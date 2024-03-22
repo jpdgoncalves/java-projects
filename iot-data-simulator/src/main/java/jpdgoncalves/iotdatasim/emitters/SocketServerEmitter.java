@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
-import jpdgoncalves.iotdatasim.base.Serializer;
+import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
 import jpdgoncalves.iotdatasim.internals.SocketServerThread;
 import jpdgoncalves.iotdatasim.internals.Ticker;
 
@@ -17,7 +17,7 @@ public class SocketServerEmitter<T> {
     private final SocketServerThread socketServerThread;
     private final Ticker tickerThread;
     private final SensorSimulator<T> sensor;
-    private final Serializer<T> serializer;
+    private final DeprecatedSerializer<T> serializer;
 
     /**
      * Create an instance of a emitter that periodically
@@ -31,7 +31,7 @@ public class SocketServerEmitter<T> {
      *                   sensor data into bytes.
      * @throws IOException
      */
-    public SocketServerEmitter(long period, int port, SensorSimulator<T> sensor, Serializer<T> serializer)
+    public SocketServerEmitter(long period, int port, SensorSimulator<T> sensor, DeprecatedSerializer<T> serializer)
             throws IOException {
         socketServerThread = new SocketServerThread(port);
         tickerThread = new Ticker(period);

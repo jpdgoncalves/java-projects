@@ -4,7 +4,7 @@ import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
-import jpdgoncalves.iotdatasim.base.Serializer;
+import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
 import jpdgoncalves.iotdatasim.internals.Ticker;
 
 /**
@@ -19,7 +19,7 @@ public class MQTTEmitter<T> {
     private final String topic;
     private final Ticker tickerThread;
     private final SensorSimulator<T> sensor;
-    private final Serializer<T> serializer;
+    private final DeprecatedSerializer<T> serializer;
 
     /**
      * Creates an Emitter that will periodically produce
@@ -29,7 +29,7 @@ public class MQTTEmitter<T> {
      * @param sensor The source of the data.
      * @param serializer The serializer that converts the data to bytes.
      */
-    public MQTTEmitter(IMqttClient client, String topic, long period, SensorSimulator<T> sensor, Serializer<T> serializer) {
+    public MQTTEmitter(IMqttClient client, String topic, long period, SensorSimulator<T> sensor, DeprecatedSerializer<T> serializer) {
         this.client = client;
         this.topic = topic;
         this.tickerThread = new Ticker(period);
