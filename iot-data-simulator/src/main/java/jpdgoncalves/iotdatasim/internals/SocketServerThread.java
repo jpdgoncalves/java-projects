@@ -64,6 +64,7 @@ public class SocketServerThread extends Thread {
      * clients.
      */
     public void tryBroadcast(byte[] msg) {
+        boolean shouldCleanup = false;
         for (Socket conn: connList) {
             if (conn.isClosed()) continue;
 
@@ -79,9 +80,11 @@ public class SocketServerThread extends Thread {
                     conn.close();
                 } catch (IOException closeErr) {}
                 // Schedule a cleanup virtual thread.
-                Thread.ofVirtual().start(this::cleanup);
+                shouldCleanup = true;
             }
         }
+
+        if (shouldCleanup) Thread.ofVirtual().start(this::cleanup);
     }
 
     private void cleanup() {

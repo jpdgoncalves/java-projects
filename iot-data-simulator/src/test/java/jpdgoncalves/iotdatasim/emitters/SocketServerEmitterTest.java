@@ -29,6 +29,7 @@ public class SocketServerEmitterTest {
         SocketEmitter<Double> emitter = new SocketEmitter<>(socketServerThread, serializer);
         DataProducer<Double> producer = new DataProducer<>(period, sensor, emitter);
 
+        socketServerThread.start();
         producer.start();
         Socket client = new Socket("localhost", port);
         InputStream in = client.getInputStream();
