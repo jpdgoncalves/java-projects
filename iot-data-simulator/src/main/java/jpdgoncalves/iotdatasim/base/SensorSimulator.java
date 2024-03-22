@@ -21,5 +21,5 @@ public interface SensorSimulator<T> {
      * time each tick represents is up to
      * the user.
      */
-    public void tick();
+    public void tick() throws SimulationEndedException;
 }

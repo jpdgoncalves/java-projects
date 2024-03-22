@@ -26,17 +26,30 @@ public class DataProducer<T> {
     }
 
     public void stop() {
+        if (tickerThread == null) return;
+
         tickerThread.interrupt();
         try {
             tickerThread.join();
         } catch (InterruptedException ignored) {
             /** Shouldn't happen but if it does it isn't a problem */
         }
+
         tickerThread = null;
     }
 
     private void tick() {
-        sensor.tick();
+        try {
+            sensor.tick();
+        } catch (SimulationEndedException e) {
+            /** 
+             * Simulation of the sensor has ended. Stop the producer 
+             * We can't use the stop method to not cause a deadlock.
+             * */
+            tickerThread.interrupt();
+            tickerThread = null;
+            return;
+        }
         emitter.emit(sensor.readValue());
     }
 }
