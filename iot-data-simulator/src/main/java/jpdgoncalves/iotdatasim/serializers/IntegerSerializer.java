@@ -2,13 +2,13 @@ package jpdgoncalves.iotdatasim.serializers;
 
 import java.nio.ByteBuffer;
 
-import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
+import jpdgoncalves.iotdatasim.base.Serializer;
 
 /**
  * A serializer that converts integers to bytes
  * and vice-versa.
  */
-public class IntegerSerializer implements DeprecatedSerializer<Integer> {
+public class IntegerSerializer implements Serializer<Integer> {
 
     /**
      * Creates an instance of a integer serializer

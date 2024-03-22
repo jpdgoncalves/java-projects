@@ -2,12 +2,12 @@ package jpdgoncalves.iotdatasim.serializers;
 
 import java.nio.ByteBuffer;
 
-import jpdgoncalves.iotdatasim.base.DeprecatedSerializer;
+import jpdgoncalves.iotdatasim.base.Serializer;
 
 /**
  * Class used to serialize and deserialize doubles.
  */
-public class DoubleSerializer implements DeprecatedSerializer<Double> {
+public class DoubleSerializer implements Serializer<Double> {
 
     /**
      * Creates an instance of a double serializer.

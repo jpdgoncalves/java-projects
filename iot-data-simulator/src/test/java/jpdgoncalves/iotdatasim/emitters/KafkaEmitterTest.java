@@ -23,7 +23,7 @@ public class KafkaEmitterTest {
         String topic = "humidity";
 
         SensorSimulator<Double> sensor = new DefaultHumiditySensor(seed);
-        jpdgoncalves.iotdatasim.base.DeprecatedSerializer<Double> serializer = new DoubleSerializer();
+        jpdgoncalves.iotdatasim.base.Serializer<Double> serializer = new DoubleSerializer();
         Serializer<Double> valueSerializer = new KafkaSerializer<>(serializer);
         MockProducer<String, Double> producer = new MockProducer<>(true, new StringSerializer(), valueSerializer);
         KafkaEmitter<Double> emitter = new KafkaEmitter<>(period, topic, sensor, producer);

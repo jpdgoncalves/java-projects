@@ -11,7 +11,7 @@ import java.io.OutputStream;
  * and decoding from bytes some data type T.
  * @param <T> The type of data that this Serializer handles.
  */
-public interface DeprecatedSerializer<T> {
+public interface Serializer<T> {
 
     /**
      * Write the instance to the output stream.
