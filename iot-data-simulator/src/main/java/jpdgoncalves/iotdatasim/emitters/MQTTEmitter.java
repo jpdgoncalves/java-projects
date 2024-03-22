@@ -3,64 +3,29 @@ package jpdgoncalves.iotdatasim.emitters;
 import org.eclipse.paho.client.mqttv3.IMqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import jpdgoncalves.iotdatasim.base.SensorSimulator;
+import jpdgoncalves.iotdatasim.base.Emitter;
 import jpdgoncalves.iotdatasim.base.Serializer;
-import jpdgoncalves.iotdatasim.internals.Ticker;
 
-/**
- * Emitter that pushes data into
- * an MQTT endpoint for a specific topic
- * 
- * @param <T> Type of data produced.
- */
-public class MQTTEmitter<T> {
-    
-    private final IMqttClient client;
+public class MQTTEmitter<T> implements Emitter<T> {
+
     private final String topic;
-    private final Ticker tickerThread;
-    private final SensorSimulator<T> sensor;
     private final Serializer<T> serializer;
+    private final IMqttClient client;
 
-    /**
-     * Creates an Emitter that will periodically produce
-     * data to the specified MQTT server.
-     * @param client Client through which data is sent. It is assumed it is connected.
-     * @param topic The topic to send the data to.
-     * @param sensor The source of the data.
-     * @param serializer The serializer that converts the data to bytes.
-     */
-    public MQTTEmitter(IMqttClient client, String topic, long period, SensorSimulator<T> sensor, Serializer<T> serializer) {
-        this.client = client;
+    public MQTTEmitter(String topic, Serializer<T> serializer, IMqttClient mqttClient) {
         this.topic = topic;
-        this.tickerThread = new Ticker(period);
-        this.sensor = sensor;
         this.serializer = serializer;
-
-        tickerThread.addTickFn(sensor::tick);
-        tickerThread.addTickFn(this::emit);
-        tickerThread.start();
+        this.client = mqttClient;
     }
 
-    /**
-     * Stops the emitter from sending any more data.
-     */
-    public void stop() {
-        tickerThread.interrupt();
-
+    @Override
+    public void emit(T data) {
         try {
-            tickerThread.join();
-        } catch (InterruptedException e) {
-            /** Ignore this exception. */
-        }
-    }
-
-    private void emit() {
-        byte[] payload = serializer.serialize(sensor.readValue());
-        try {
-            client.publish(topic, payload, 0, false);
+            client.publish(topic, serializer.serialize(data), 0, false);
         } catch (MqttException e) {
             /** Print the exception if it occurs */
             e.printStackTrace();
         }
     }
+
 }

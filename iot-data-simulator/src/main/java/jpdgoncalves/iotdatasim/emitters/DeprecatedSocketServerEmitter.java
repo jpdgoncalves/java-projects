@@ -12,7 +12,7 @@ import jpdgoncalves.iotdatasim.internals.Ticker;
  * An emitter that works on sockets.
  * @param <T> The type of data that will be produced
  */
-public class SocketServerEmitter<T> {
+public class DeprecatedSocketServerEmitter<T> {
 
     private final SocketServerThread socketServerThread;
     private final Ticker tickerThread;
@@ -31,7 +31,7 @@ public class SocketServerEmitter<T> {
      *                   sensor data into bytes.
      * @throws IOException
      */
-    public SocketServerEmitter(long period, int port, SensorSimulator<T> sensor, Serializer<T> serializer)
+    public DeprecatedSocketServerEmitter(long period, int port, SensorSimulator<T> sensor, Serializer<T> serializer)
             throws IOException {
         socketServerThread = new SocketServerThread(port);
         tickerThread = new Ticker(period);

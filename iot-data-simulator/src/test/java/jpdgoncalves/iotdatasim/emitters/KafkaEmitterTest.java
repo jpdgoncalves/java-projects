@@ -26,7 +26,7 @@ public class KafkaEmitterTest {
         jpdgoncalves.iotdatasim.base.Serializer<Double> serializer = new DoubleSerializer();
         Serializer<Double> valueSerializer = new KafkaSerializer<>(serializer);
         MockProducer<String, Double> producer = new MockProducer<>(true, new StringSerializer(), valueSerializer);
-        KafkaEmitter<Double> emitter = new KafkaEmitter<>(period, topic, sensor, producer);
+        DeprecatedKafkaEmitter<Double> emitter = new DeprecatedKafkaEmitter<>(period, topic, sensor, producer);
 
         Thread.sleep(period * 10);
         emitter.stop();

@@ -23,7 +23,7 @@ public class SocketServerEmitterTest {
 
         SensorSimulator<Double> sensor = new DefaultTempSensor(seed);
         Serializer<Double> serializer = new DoubleSerializer();
-        SocketServerEmitter<Double> emitter = new SocketServerEmitter<>(period, port, sensor, serializer);
+        DeprecatedSocketServerEmitter<Double> emitter = new DeprecatedSocketServerEmitter<>(period, port, sensor, serializer);
 
         Socket client = new Socket("localhost", port);
         InputStream in = client.getInputStream();
