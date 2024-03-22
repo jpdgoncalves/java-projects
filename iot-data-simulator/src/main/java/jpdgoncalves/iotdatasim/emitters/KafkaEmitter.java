@@ -4,7 +4,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
-import jpdgoncalves.iotdatasim.base.Ticker;
+import jpdgoncalves.iotdatasim.internals.Ticker;
 
 /**
  * Emitter that periodically sends records through

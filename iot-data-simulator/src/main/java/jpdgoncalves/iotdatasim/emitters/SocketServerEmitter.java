@@ -5,8 +5,8 @@ import java.nio.ByteBuffer;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 import jpdgoncalves.iotdatasim.base.Serializer;
-import jpdgoncalves.iotdatasim.base.Ticker;
 import jpdgoncalves.iotdatasim.internals.SocketServerThread;
+import jpdgoncalves.iotdatasim.internals.Ticker;
 
 /**
  * An emitter that works on sockets.

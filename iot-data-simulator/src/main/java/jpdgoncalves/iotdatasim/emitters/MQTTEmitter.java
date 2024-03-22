@@ -5,7 +5,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 
 import jpdgoncalves.iotdatasim.base.SensorSimulator;
 import jpdgoncalves.iotdatasim.base.Serializer;
-import jpdgoncalves.iotdatasim.base.Ticker;
+import jpdgoncalves.iotdatasim.internals.Ticker;
 
 /**
  * Emitter that pushes data into

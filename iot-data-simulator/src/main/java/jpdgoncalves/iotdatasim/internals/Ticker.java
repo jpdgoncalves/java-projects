@@ -1,4 +1,4 @@
-package jpdgoncalves.iotdatasim.base;
+package jpdgoncalves.iotdatasim.internals;
 
 import java.util.HashSet;
 
